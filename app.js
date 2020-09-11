@@ -1,13 +1,14 @@
-const express = require ('express')
-const func = require ('functions')
-const morgan = require ('morgan')
-const bodyParser = require ('body-parser')
+const express = require('express')
+const { success, error } = require('functions')
+const morgan = require('morgan')
+const config = require('./config')
+const bodyParser = require('body-parser')
 const app = express()
 
 
 
 
-const members= [
+const members = [
     {
         id: 1,
         name: 'Jonh'
@@ -21,41 +22,123 @@ const members= [
         name: 'Jack'
     }
 ]
+let MembersRouter = express.Router()
+
 app.use(morgan('dev'))
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-app.get('/api/v1/members/:id', (req, res) => {
-    res.json(success(members[(req.params.id)-1]))
-})
+MembersRouter.route('/:id')
 
-app.get('/api/v1/members', (req, res) => {
-    if (req.query.max != undefined && req.query.max > 0) {
-        res.json(func.success(members.slice(0, req.query.max)))
-    }else if (req.query.max != undefined){
-        res.json(func.error('Wrong max value'))
-    }else {
-        res.json(func.success(members))
-    }
-})
+    .get((req, res) => {
 
-app.post('/api/v1/members', (req, res) =>{
-    if (req.body.name) {
+        let index = getIndex(req.params.id)
 
-        let member = {
-            id: members.length+1,
-            name: req.body.name
+        if (typeof(index) == 'string'){
+            res.json(error(index))
+        }else{
+            res.json(success(members[index]))
         }
-        members.push(member)
-        res.json(func.success(member)) 
-    }else {
-        res.json(func.error('No name value'))
+
+
+        res.json(success(members[(req.params.id) - 1]))
+    })
+
+    .put((req, res) => {
+        let index = getIndex(req.params.id)
+
+        if (typeof(index) == 'string'){
+            res.json(error(index))
+        }else{
+            
+            let same = false
+            for (let i = 0; i < members.length; i++) {
+                if (req.body.name == members[i].name && req.params.id !== members[i].id) {
+                same = true
+                break
+                }
+            }
+
+            if (same){
+                res.json(error('same name'))
+            }else{
+                members[index].name = req.body.name
+                res.json(success(true))
+            }
+            
+        
+        }
+
+    })
+
+    .delete((req, res) => {
+        let index = getIndex(req.params.id)
+
+        if (typeof(index) == 'string'){
+            res.json(error(index))
+        }else{
+            members.splice(index, 1)
+            res.json(success(members))
+        }
+
+    })
+
+    MembersRouter.route('/')
+
+        .get((req, res) => {
+            if (req.query.max != undefined && req.query.max > 0) {
+                res.json(success(members.slice(0, req.query.max)))
+            } else if (req.query.max != undefined) {
+                res.json(error('Wrong max value'))
+            } else {
+                res.json(success(members))
+            }
+        })
+
+        .post((req, res) => {
+            if (req.body.name) {
+
+                let sameName = false
+
+                for (let i = 0; i < members.length; i++) {
+                    if (members[i].name == req.body.name) {
+                        sameName = true
+                        break
+                    }
+                }
+                if (sameName) {
+                    res.json(error('Name already taken'))
+                } else {
+                    let member = {
+                        id: createId(),
+                        name: req.body.name
+                    }
+                    members.push(member)
+                    res.json(success(member))
+
+                }
+            } else {
+                res.json(error('No name value'))
+            }
+        })
+
+
+app.use(config.rootAPI+members, MembersRouter)
+
+app.listen(config.port, () => {
+    console.log('Started on port' + config.port)
+})
+
+function getIndex(id) {
+    for (let i = 0; i < members.length; i++) {
+        if (members[i].id == id)
+            return i
     }
-})
+    return ('Wrong id')
+}
 
-app.listen(8080, () => {
-    console.log('Started on port 8080')
-})
-
+function createId() {
+    return lastMember = members[members.length-1].id +1
+}
 

@@ -1,73 +1,98 @@
 {
-"openapi": "3.0.0",
-"info": {
-"title": "api-rest-node",
-"version": "1.0.0",
-"license": {
-"name": "ISC"
-},
-"description": "Specification JSONs: [v2](/api-spec/v2), [v3](/api-spec/v3)."
-},
-"paths": {
-/api/v1/members/{id}: {
-"get": {
-"summary": "/api/v1/members/{id}",
-"parameters": [
-{
-"name": "id",
-"in": "path",
-"required": true,
-"schema": {
-"type": "string"
-}
-}
-],
-"responses": { },
-"tags": [ ]
-},
-"put": {
-"summary": "/api/v1/members/{id}",
-"parameters": [
-{
-"name": "id",
-"in": "path",
-"required": true,
-"schema": {
-"type": "string"
-}
-}
-],
-"responses": { },
-"tags": [ ]
-},
-"delete": {
-"summary": "/api/v1/members/{id}",
-"parameters": [
-{
-"name": "id",
-"in": "path",
-"required": true,
-"schema": {
-"type": "string"
-}
-}
-],
-"responses": { },
-"tags": [ ]
-}
-},
-/api/v1/members: {
-"get": {
-"summary": "/api/v1/members",
-"responses": { },
-"tags": [ ]
-},
-"post": {
-"summary": "/api/v1/members",
-"responses": { },
-"tags": [ ]
-}
-}
-},
-"tags": [ ]
-}
+    "openapi": "3.0.0",
+    "info": {
+      "title": "API REST Documentation",
+      "version": "1.0.0",
+      "license": {
+        "name": "ISC"
+      },
+      "description": "User management API"
+    },
+    "basePath": "/api/v1",
+    "host": "localhost:8080",
+    "paths": {
+      "members/{id}": {
+        "get": {
+          "summary": "members/{id}",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {},
+          "tags": ["members"]
+        },
+        "put": {
+          "summary": "members/{id}",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {},
+          "tags": ["members"]
+        },
+        "delete": {
+          "summary": "members/{id}",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {},
+          "tags": ["members"]
+        }
+      },
+      "members": {
+        "get": {
+          "summary": "members",
+          "responses": {},
+          "tags": ["members"],
+          "parameters":[
+            {
+          "name": "max",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "type": "number"
+          }
+        }
+      ]
+        },
+        "post": {
+          "summary": "members",
+          "responses": {},
+          "tags":["members"],
+          "parameters":[
+              {
+            "name": "name",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+        }
+      }
+    },
+    "tags": [{
+        "name": "members",
+        "description": "CRUD users"
+    }]
+  }

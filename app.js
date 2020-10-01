@@ -8,6 +8,7 @@ const config = require('./assets/config')
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./assets/swagger.json');
 
+
 mysql.createConnection({
     host: config.db.host,
     database: config.db.database,
@@ -19,6 +20,7 @@ mysql.createConnection({
 
         const app = express()
         
+        
 
         let MembersRouter = express.Router()
         let Members = require('./assets/classes/members-class')(db, config)
@@ -26,7 +28,7 @@ mysql.createConnection({
         app.use(morgan)
         app.use(bodyParser.json());
         app.use(bodyParser.urlencoded({ extended: true }))
-        app.use(config.rootAPI+'/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+        app.use(config.rootAPI+'api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
         MembersRouter.route('/:id')
 
